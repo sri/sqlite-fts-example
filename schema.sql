@@ -1,11 +1,3 @@
--- create table note_types (
---   id integer not null primary key,
---   note_type text not null
--- )
-
--- insert into note_types(note_type) values('code')
--- insert into note_types(note_type) values('text')
-
 CREATE TABLE worklogs (
   id INTEGER NOT NULL PRIMARY KEY,
 
@@ -24,23 +16,15 @@ CREATE TABLE worklogs (
 
 CREATE UNIQUE INDEX idx_worklogs_workdate ON worklogs(workdate);
 
+-- Full-text search for worklogs.
 CREATE VIRTUAL TABLE fts_worklogs USING FTS5(note, workdate, content='worklogs', content_rowid='id');
 CREATE TRIGGER trigger_worklogs_ai AFTER INSERT ON worklogs BEGIN
   INSERT INTO fts_worklogs(rowid, note, workdate) VALUES(new.id, new.note, new.workdate);
-end;
+END;
 CREATE TRIGGER trigger_worklogs_ad AFTER DELETE ON worklogs BEGIN
   INSERT INTO fts_worklogs(fts_worklogs, rowid, note, workdate) VALUES('delete', old.id, old.note, old.workdate);
-end;
+END;
 CREATE TRIGGER trigger_worklogs_au after UPDATE ON worklogs BEGIN
   INSERT INTO fts_worklogs(fts_worklogs, rowid, note, workdate) VALUES('delete', old.id, old.note, old.workdate);
   INSERT INTO fts_worklogs(rowid, note, workdate) VALUES (new.id, new.note, new.workdate);
-end;
-
-
--- create table todos {
-  -- id integer not null primary key,
-
-
-  -- created_at datetime,
-  -- updated_at datetime,
--- }
+END;
