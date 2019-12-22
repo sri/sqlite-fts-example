@@ -1,0 +1,11 @@
+<html>
+    <head>
+        <title>{{ title }} - Microblog</title>
+    </head>
+    <body>
+      {% for worklog in worklogs %}
+        <div>{{ worklog['note'] }}</div>
+        <br/>
+      {% endfor %}
+    </body>
+</html>
